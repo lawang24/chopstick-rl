@@ -4,7 +4,7 @@ class GameState:
         self.player1_hands = sorted([low_hand, high_hand])
         self.player2_hands = sorted([opponent_low_hand, opponent_high_hand])
 
-    def move(self, action: str, action_params: list):
+    def move(self, action: str, action_params: list[int]):
 
         if action == 'tap':
             attacking_hand_index = action_params[0]
@@ -32,8 +32,6 @@ class GameState:
             else:
                 self.player2_hands = [new_hand_1, new_hand_2]
 
-            print("entered")
-
         self.player1_hands.sort()
         self.player2_hands.sort()
             
@@ -41,7 +39,7 @@ class GameState:
         self.player1_turn = not self.player1_turn
 
     
-    def is_valid_move(self, action: str, action_params: list):
+    def is_valid_move(self, action: str, action_params: list[int]):
 
         if action not in ['tap', 'split']:
             raise ValueError("Invalid action. Must be 'tap' or 'split'.")
@@ -67,10 +65,9 @@ class GameState:
 
             
         if action == "split":
-
             hand1, hand2 = action_params
 
-            if not (0<hand1<=5 and 0<hand2<=5):
+            if not (0<hand1<5 and 0<hand2<5):
                 print('Distributed values must be in between 0<x<=5')  
                 return False
 
@@ -81,7 +78,7 @@ class GameState:
                 return False
 
             if sorted(current_hand)==sorted(action_params):
-                print(f'No duplicate swapping')  
+                print('No duplicate swapping')  
                 return False
 
         return True
@@ -102,43 +99,3 @@ class GameState:
         output += f' Player 1 hands: {self.player1_hands} Player 2 hands: {self.player2_hands}'
         return output
 
-def main():
-    
-    game = GameState()
-
-
-    while (not game.is_over()):
-
-        print(game)
-        # human player move
-        if game.player1_turn:
-            user_input = input('Insert action type, param1, and param 2 \n').split()
-            if (len(user_input)!=3):
-                print('Invalid input, must be three')
-                continue
-
-            move_type, param1, param2 = user_input
-            param1, param2 = int(param1), int(param2)
-            if not game.is_valid_move(move_type, [param1, param2]):
-                continue
-            game.move(move_type, [param1, param2])
-
-
-        # second player move
-        else:
-            user_input = input('Insert action type, param1, and param 2 \n').split()
-            if (len(user_input)!=3):
-                print('Invalid input, must be three')
-                continue
-
-            move_type, param1, param2 = user_input
-            param1, param2 = int(param1), int(param2)
-            if not game.is_valid_move(move_type, [param1, param2]):
-                continue
-            game.move(move_type, [param1, param2])
-
-        print()
-        
-    
-if __name__ == "__main__":
-    main()
