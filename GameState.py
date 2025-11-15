@@ -1,12 +1,14 @@
+from constants import Actions
+
 class GameState:
-    def __init__(self, player1_turn: bool = True, low_hand: int = 1, high_hand: int = 1, opponent_low_hand: int = 1, opponent_high_hand: int = 1):
+    def __init__(self, player1_turn: bool = True, player1_hands: tuple[int, int] = (1, 1), player2_hands: tuple[int, int] = (1, 1)):
         self.player1_turn = player1_turn
-        self.player1_hands = sorted([low_hand, high_hand])
-        self.player2_hands = sorted([opponent_low_hand, opponent_high_hand])
+        self.player1_hands = player1_hands
+        self.player2_hands = player2_hands
 
-    def move(self, action: str, action_params: list[int]):
+    def move(self, action: str, action_params: tuple[int, int]):
 
-        if action == 'tap':
+        if action == Actions.tap:
             attacking_hand_index = action_params[0]
             target_hand_index = action_params[1]
 
@@ -15,36 +17,36 @@ class GameState:
                 target_num = self.player2_hands[target_hand_index]
 
                 new_target_num = (target_num + attacking_num) % 5
-                self.player2_hands[target_hand_index] = new_target_num
+                other_hand = self.player2_hands[1 - target_hand_index]
+                self.player2_hands = (min(new_target_num, other_hand), max(new_target_num, other_hand))
 
             else:
                 attacking_num = self.player2_hands[attacking_hand_index]
                 target_num = self.player1_hands[target_hand_index]
 
                 new_target_num = (target_num + attacking_num) % 5
-                self.player1_hands[target_hand_index] = new_target_num
+                other_hand = self.player1_hands[1 - target_hand_index]
+                self.player1_hands = (min(new_target_num, other_hand), max(new_target_num, other_hand))
         
-        if action == 'split':
+        if action == Actions.split:
             new_hand_1 = action_params[0]
             new_hand_2 = action_params[1]
             if self.player1_turn:
-                self.player1_hands = [new_hand_1, new_hand_2]
+                self.player1_hands = (new_hand_1, new_hand_2)
             else:
-                self.player2_hands = [new_hand_1, new_hand_2]
-
-        self.player1_hands.sort()
-        self.player2_hands.sort()
+                self.player2_hands = (new_hand_1, new_hand_2)
+                
             
         # change to next turn
         self.player1_turn = not self.player1_turn
 
     
-    def is_valid_move(self, action: str, action_params: list[int]):
+    def is_valid_move(self, action: str, action_params: tuple[int, int]):
 
-        if action not in ['tap', 'split']:
+        if action not in [Actions.tap, Actions.split]:
             raise ValueError("Invalid action. Must be 'tap' or 'split'.")
         
-        if action == 'tap':
+        if action == Actions.tap:
             attacking_hand_index = action_params[0]
             target_hand_index = action_params[1]
 
@@ -64,11 +66,11 @@ class GameState:
                 return False
 
             
-        if action == "split":
+        if action == Actions.split:
             hand1, hand2 = action_params
 
-            if not (0<hand1<5 and 0<hand2<5):
-                print('Distributed values must be in between 0<x<=5')  
+            if not (0<=hand1<=4 and 0<=hand2<=4):
+                print('Distributed values must be in between [0, 4]')  
                 return False
 
             current_hand = self.player1_hands if self.player1_turn else self.player2_hands
@@ -77,7 +79,7 @@ class GameState:
                 print(f'Starting and ending of distribution must be equal. {sum(current_hand)}!={sum(action_params)}')  
                 return False
 
-            if sorted(current_hand)==sorted(action_params):
+            if sorted(current_hand) == sorted(action_params):
                 print('No duplicate swapping')  
                 return False
 
