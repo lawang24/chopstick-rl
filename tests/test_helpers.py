@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from computer_helpers import generate_all_tapping_moves, generate_all_distribute_moves
+from action_generation import generate_all_tapping_moves, generate_all_distribute_moves
 
 
 class TestGenerateAllTappingMoves(unittest.TestCase):

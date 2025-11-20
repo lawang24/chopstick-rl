@@ -1,6 +1,6 @@
 import random
 from GameState import GameState
-from computer_helpers import generate_all_distribute_moves, generate_all_tapping_moves
+from action_generation import generate_all_distribute_moves, generate_all_tapping_moves
 
 def human_turn(game: GameState):
     while True:

@@ -1,5 +1,6 @@
 from constants import Actions
 import random
+from custom_types import game_position
 
 def generate_all_tapping_moves(hero_state: tuple[int, int], opponent_state: tuple[int, int]):
     moves = []
@@ -17,7 +18,11 @@ def generate_all_distribute_moves(hero_state: tuple[int, int]):
     output = [(Actions.split,(a, total-a)) for a in range(one_hand_min, total//2+1) if a!=hero_state[0]]
     return output
 
+def generate_all_possible_moves(hero_state: tuple[int, int], opponent_state: tuple[int, int]):
+    return generate_all_distribute_moves(hero_state) + generate_all_tapping_moves(hero_state, opponent_state)
+
 def return_random_move(hero_state: tuple[int, int], opponent_state: tuple[int, int]):
-    all_possible_moves = generate_all_distribute_moves(hero_state) + generate_all_tapping_moves(hero_state, opponent_state)
+    all_possible_moves = generate_all_possible_moves(hero_state, opponent_state)
     random_move = random.choice(all_possible_moves)
     return random_move
+

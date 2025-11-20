@@ -1,4 +1,6 @@
 from constants import Actions
+from custom_types import game_position
+
 
 class GameState:
     def __init__(self, player1_turn: bool = True, player1_hands: tuple[int, int] = (1, 1), player2_hands: tuple[int, int] = (1, 1)):
@@ -101,3 +103,19 @@ class GameState:
         output += f' Player 1 hands: {self.player1_hands} Player 2 hands: {self.player2_hands}'
         return output
 
+
+def handle_tap(attacking_hand_index: int, target_hand_index: int, game_position: game_position) -> game_position:
+
+    player1_hands = game_position[0]
+    player2_hands = list[int](game_position[1])
+
+    attacking_num = player1_hands[attacking_hand_index]
+    target_num = player2_hands[target_hand_index]
+    new_target_num = (target_num + attacking_num) % 5
+    player2_hands[target_hand_index] = new_target_num
+    
+    return (player1_hands, tuple[int, int](player2_hands) )
+
+def handle_split(hand1: int, hand2: int, game_position: game_position) -> game_position:
+    game_position = ((hand1, hand2), game_position[1])
+    return game_position
