@@ -4,8 +4,9 @@ DQN PSEUDOCODE
 2. observe what happens (next state, rewards, terminated, etc.)
 3. store what we saw in the replay buffer
 4. randomly sample a batch from the replay buffer (so samples are not so correlated / close together in time)
-5. occassionally update the target network (so there is not a "moving goalpost" and the Q-network has a chance to learn with stable
+5. train the Q-network while keeping the target network stable (so there is not a "moving goalpost" and the Q-network has a chance to learn with stable
 future predictions)
+6. replace Q-network with target network
 """
 
 INPUT_STATES = 4
