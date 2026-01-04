@@ -1,3 +1,5 @@
+import random
+
 """
 DQN PSEUDOCODE
 1. epsilon greedy sample from action space
@@ -30,14 +32,62 @@ class QNetwork(nn.Module):
 if __name__ == "__main__":
 
     q_network = QNetwork()
+    target_network = q_network.copy()
 
     GLOBAL_STEPS = 1000
     TARGET_NETWORK_UPDATE_FREQUENCY = 1000
+    HARDCODED_EPSILON = .1
+    LEARNING_START_STEP = 100
+    TRAIN_FREQ = 10 # train every 10 env steps
+    TARGET_UPDATE_FREQ = 50 # swap train -> target NN
+    GAMMA_DISCOUNT = .99
 
     replay_buffer = []
 
-    for _ in range(GLOBAL_STEPS):
-        pass
+    state = [0,0]
+
+    for step in range(GLOBAL_STEPS):
+        if random.uniform(0,1) <= HARDCODED_EPSILON:
+            action = random_action(state)
+        else:
+            action = q_network(state).max()
+
+        # don't need info term
+        next_obs, reward, done = env.move(action)
+
+        rb.add(obs, next_obs, action, reward, done)
+
+        obs = next_obs
+
+        if step > LEARNING_START_STEP:
+
+            if TRAIN_FREQ % step == 0:
+                obs, next_obs, action, reward, done = rb.sample()
+                with torch.no_grad():
+                    if not done:
+                        target_value = reward + GAMMA_DISCOUNT* target_network(next_obs).max()
+                    else:
+                        target_value = reward
+                    
+                    loss = MSE (target_value,q_value) 
+
+
+            optimizer.zero_grad() # clear optimizer gradients
+            loss.backward() # calculate new gradients
+            optimizer.step()
+
+            if TARGET_UPDATE_FREQ % step == 0:
+                target_network = QNetwork.copy()
+
+    # save game 
+
+                    
+                
+        
+
+        
+
+        
   
        
     
