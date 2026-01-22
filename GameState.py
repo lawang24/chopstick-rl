@@ -1,6 +1,4 @@
-from constants import Actions
-from custom_types import game_position
-
+from custom_types import GamePosition, Actions, Move
 
 class GameState:
     def __init__(self, player1_turn: bool = True, player1_hands: tuple[int, int] = (1, 1), player2_hands: tuple[int, int] = (1, 1)):
@@ -104,18 +102,35 @@ class GameState:
         return output
 
 
-def handle_tap(attacking_hand_index: int, target_hand_index: int, game_position: game_position) -> game_position:
+# handlers are written from the hero's turn point of view 
 
-    player1_hands = game_position[0]
-    player2_hands = list[int](game_position[1])
+def move_handler(move: Move, game_position: GamePosition):
+    param1, param2 = move[1]
+    if move[0] == Actions.tap:
+        return handle_tap(param1, param2, game_position)
+    elif move[0] == Actions.split:
+        return handle_split(param1, param2, game_position)
 
-    attacking_num = player1_hands[attacking_hand_index]
-    target_num = player2_hands[target_hand_index]
-    new_target_num = (target_num + attacking_num) % 5
-    player2_hands[target_hand_index] = new_target_num
+def handle_tap(attacking_hand_index: int, target_hand_index: int, game_position: GamePosition) -> GamePosition:
+
+    hero_hands = game_position[0]
+    villain_hands = list[int](game_position[1])
+
+    attacking_num = hero_hands[attacking_hand_index]
+    target_num = villain_hands[target_hand_index]
     
-    return (player1_hands, tuple[int, int](player2_hands) )
+    assert attacking_num != 0, f'Attacking with an empty hand index {attacking_hand_index}'
+    assert target_num != 0, f'Target is an empty hand index {target_hand_index}'
+    
+    new_target_num = (target_num + attacking_num) % 5
+    villain_hands[target_hand_index] = new_target_num
+    
+    return (hero_hands, (villain_hands[0], villain_hands[1]))
 
-def handle_split(hand1: int, hand2: int, game_position: game_position) -> game_position:
+def handle_split(hand1: int, hand2: int, game_position: GamePosition) -> GamePosition:
+    assert 0 <= hand1 <= 4 and 0 <= hand2 <= 4, 'Distributed values must be in between [0, 4]'
+    current_hand = game_position[0]
+    assert sum(current_hand) == hand1 + hand2, f'Starting and ending of distribution must be equal. {sum(current_hand)}!={hand1 + hand2}'
+    assert sorted(current_hand) != sorted((hand1, hand2)), 'No duplicate swapping'
     game_position = ((hand1, hand2), game_position[1])
     return game_position

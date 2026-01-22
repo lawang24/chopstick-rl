@@ -1,13 +1,12 @@
 from state_generation import generate_all_states_ordered, poss_hands
-from action_generation import generate_all_possible_moves
-from custom_types import game_position
-from constants import Actions
+from move_generation import generate_all_possible_moves
+from custom_types import GamePosition, Actions
 from GameState import handle_tap, handle_split
 from math import inf
 
-def calculate_value(curr_game_pos: game_position, rewards: dict[game_position, int]):
+def calculate_value(curr_game_pos: GamePosition, rewards: dict[GamePosition, int]):
     all_possible_moves = generate_all_possible_moves(curr_game_pos[0], curr_game_pos[1])
-    champ = -inf
+    champ = int(-inf)
     for move_type, (param1, param2) in all_possible_moves:
         if move_type == Actions.tap:
             new_game_pos = handle_tap(param1, param2, curr_game_pos)
@@ -23,7 +22,7 @@ def calculate_value(curr_game_pos: game_position, rewards: dict[game_position, i
             calculate_value(new_game_pos, rewards)
         
         # best action for this turn is the worst reward for your opponent's next move 
-        # NEGAMAX IMPLEMENTATION
+        # (hence, negamax)
         champ = max(champ, -rewards[new_game_pos])
 
     rewards[curr_game_pos] = champ
@@ -37,7 +36,7 @@ def minimax_solution():
 
     # doubles as a visited array
     # always positioned as player 1's turn
-    reward: dict[game_position, int] = {}
+    reward: dict[GamePosition, int] = {}
 
     for my_hand in poss_hands:
         for opp_hand in poss_hands:

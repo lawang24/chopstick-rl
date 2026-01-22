@@ -1,3 +1,11 @@
-from typing import TypeAlias
-game_position: TypeAlias = tuple[tuple[list, list], tuple[list, list]]
+from enum import Enum
+from typing import Literal, TypeAlias
+
+class Actions(str, Enum):
+    tap = 'tap'
+    split = 'split'
+
+ActionType = Literal[Actions.tap, Actions.split]
+Move: TypeAlias = tuple[ActionType, tuple[int, int]]
+GamePosition: TypeAlias = tuple[tuple[int, int], tuple[int, int]]
 

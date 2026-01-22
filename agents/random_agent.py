@@ -1,0 +1,10 @@
+from custom_types import Move, GamePosition
+from move_generation import return_random_move
+
+class RandomAgent:
+    def get_move(game_position: GamePosition) -> Move:
+        return return_random_move(game_position[0], game_position[1])
+
+
+
+        
