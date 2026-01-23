@@ -13,7 +13,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when both players have both hands alive"""
         hero_state = (1, 2)
         opponent_state = (3, 4)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # Hero hand 0 (1) can tap opponent hands 0 (3) and 1 (4)
         # Hero hand 1 (2) can tap opponent hands 0 (3) and 1 (4)
         expected = [(0, 0), (0, 1), (1, 0), (1, 1)]
@@ -23,7 +24,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when hero's left hand is dead (0)"""
         hero_state = (0, 2)
         opponent_state = (1, 3)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # Only hero hand 1 can tap
         expected = [(1, 0), (1, 1)]
         self.assertEqual(result, expected)
@@ -32,7 +34,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when hero's right hand is dead (0)"""
         hero_state = (2, 0)
         opponent_state = (1, 3)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # Only hero hand 0 can tap
         expected = [(0, 0), (0, 1)]
         self.assertEqual(result, expected)
@@ -41,7 +44,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when opponent's left hand is dead (0)"""
         hero_state = (1, 2)
         opponent_state = (0, 3)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # Can only tap opponent hand 1
         expected = [(0, 1), (1, 1)]
         self.assertEqual(result, expected)
@@ -50,7 +54,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when opponent's right hand is dead (0)"""
         hero_state = (1, 2)
         opponent_state = (3, 0)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # Can only tap opponent hand 0
         expected = [(0, 0), (1, 0)]
         self.assertEqual(result, expected)
@@ -59,7 +64,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when both hero hands are dead"""
         hero_state = (0, 0)
         opponent_state = (1, 2)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # No moves possible
         expected = []
         self.assertEqual(result, expected)
@@ -68,7 +74,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when both opponent hands are dead"""
         hero_state = (1, 2)
         opponent_state = (0, 0)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # No moves possible
         expected = []
         self.assertEqual(result, expected)
@@ -77,7 +84,8 @@ class TestGenerateAllTappingMoves(unittest.TestCase):
         """Test when both players have one dead hand"""
         hero_state = (0, 3)
         opponent_state = (2, 0)
-        result = generate_all_tapping_moves(hero_state, opponent_state)
+        game_position = (hero_state, opponent_state)
+        result = generate_all_tapping_moves(game_position)
         # Only hero hand 1 can tap opponent hand 0
         expected = [(1, 0)]
         self.assertEqual(result, expected)
@@ -89,7 +97,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_two_fingers(self):
         """Test distributing 2 fingers"""
         hero_state = (0, 2)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 2, possible: (1, 1)
         # Excluding original (0, 2)
         expected = [(1, 1)]
@@ -98,7 +107,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_three_fingers(self):
         """Test distributing 3 fingers"""
         hero_state = (0, 3)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 3, possible: (1, 2)
         # Excluding original (0, 3)
         expected = [(1, 2)]
@@ -107,7 +117,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_four_fingers(self):
         """Test distributing 4 fingers"""
         hero_state = (0, 4)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 4, possible: (0, 4), (1, 3), (2, 2)
         # Excluding original (0, 4)
         expected = [(1, 3), (2, 2)]
@@ -116,7 +127,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_from_balanced_state(self):
         """Test distributing from already balanced state"""
         hero_state = (2, 2)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 4, possible: (0, 4), (1, 3), (2, 2)
         # Excluding original (2, 2)
         expected = [(0, 4), (1, 3)]
@@ -125,7 +137,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_five_fingers(self):
         """Test distributing 5 fingers"""
         hero_state = (1, 4)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 5, possible: (1, 4), (2, 3)
         # Excluding original (1, 4)
         expected = [(2, 3)]
@@ -134,7 +147,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_six_fingers(self):
         """Test distributing 6 fingers"""
         hero_state = (2, 4)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 6, possible: (2, 4), (3, 3)
         # Excluding original (2, 4)
         expected = [(3, 3)]
@@ -143,7 +157,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_seven_fingers(self):
         """Test distributing 7 fingers"""
         hero_state = (3, 4)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 7, possible: (3, 4)
         # Excluding original (3, 4) - no other valid distributions
         expected = []
@@ -152,7 +167,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_eight_fingers(self):
         """Test distributing 8 fingers (maximum)"""
         hero_state = (4, 4)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 8, possible: (4, 4)
         # Excluding original (4, 4) - no other valid distributions
         expected = []
@@ -161,7 +177,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_with_reversed_input(self):
         """Test that function normalizes input (min, max)"""
         hero_state = (3, 1)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 4, normalized to (1, 3)
         # Possible: (0, 4), (1, 3), (2, 2)
         # Excluding original (1, 3)
@@ -171,7 +188,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_one_finger(self):
         """Test distributing with only 1 finger total"""
         hero_state = (0, 1)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 1, only possible: (0, 1)
         # Excluding original (0, 1)
         expected = []
@@ -180,7 +198,8 @@ class TestGenerateAllDistributeMoves(unittest.TestCase):
     def test_distribute_unbalanced_state(self):
         """Test distributing from unbalanced state"""
         hero_state = (1, 3)
-        result = generate_all_distribute_moves(hero_state)
+        game_position = (hero_state, (0, 0))
+        result = generate_all_distribute_moves(game_position)
         # Total = 4, possible: (0, 4), (1, 3), (2, 2)
         # Excluding original (1, 3)
         expected = [(0, 4), (2, 2)]

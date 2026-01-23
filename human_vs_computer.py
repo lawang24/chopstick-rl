@@ -16,8 +16,8 @@ def human_turn(game: GameState):
             return
         
 def computer_turn(game: GameState):
-
-    all_possible_moves = generate_all_distribute_moves(game.player2_hands) + generate_all_tapping_moves(game.player2_hands, game.player1_hands)
+    game_position = (game.player2_hands, game.player1_hands)
+    all_possible_moves = generate_all_distribute_moves(game_position) + generate_all_tapping_moves(game_position)
     move_type, (param1, param2) = random.choice(all_possible_moves)
 
     print(f"Computer moves: {move_type} {param1} {param2}")

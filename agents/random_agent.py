@@ -6,7 +6,7 @@ class RandomAgent:
     Always plays a random move
     '''
     def get_move(self, game_position: GamePosition) -> Move:
-        return return_random_move(game_position[0], game_position[1])
+        return return_random_move(game_position)
 
 
 

@@ -5,8 +5,8 @@ from GameState import handle_tap, handle_split
 from math import inf
 
 def calculate_value(curr_game_pos: GamePosition, rewards: dict[GamePosition, int]):
-    all_possible_moves = generate_all_possible_moves(curr_game_pos[0], curr_game_pos[1])
-    champ = int(-inf)
+    all_possible_moves = generate_all_possible_moves(curr_game_pos)
+    champ = float(-inf)
     for move_type, (param1, param2) in all_possible_moves:
         if move_type == Actions.tap:
             new_game_pos = handle_tap(param1, param2, curr_game_pos)
