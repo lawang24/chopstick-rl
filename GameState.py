@@ -6,7 +6,8 @@ class GameState:
         self.player1_hands = player1_hands
         self.player2_hands = player2_hands
 
-    def move(self, action: str, action_params: tuple[int, int]):
+    def move(self, move: Move):
+        action, action_params = move
 
         if action == Actions.tap:
             attacking_hand_index = action_params[0]
@@ -41,7 +42,8 @@ class GameState:
         self.player1_turn = not self.player1_turn
 
     
-    def is_valid_move(self, action: str, action_params: tuple[int, int]):
+    def is_valid_move(self, move: Move):
+        action, action_params = move
 
         if action not in [Actions.tap, Actions.split]:
             raise ValueError("Invalid action. Must be 'tap' or 'split'.")
@@ -96,6 +98,9 @@ class GameState:
 
         return False
 
+    def getState(self) -> GamePosition:
+        return ()
+
     def __repr__(self) -> str:
         output = "P1 turn" if self.player1_turn else "P2 turn"
         output += f' Player 1 hands: {self.player1_hands} Player 2 hands: {self.player2_hands}'
@@ -103,8 +108,7 @@ class GameState:
 
 
 # handlers are written from the hero's turn point of view 
-
-def move_handler(move: Move, game_position: GamePosition):
+def move_handler(move: Move, game_position: GamePosition) -> GamePosition:
     param1, param2 = move[1]
     if move[0] == Actions.tap:
         return handle_tap(param1, param2, game_position)
@@ -134,3 +138,4 @@ def handle_split(hand1: int, hand2: int, game_position: GamePosition) -> GamePos
     assert sorted(current_hand) != sorted((hand1, hand2)), 'No duplicate swapping'
     game_position = ((hand1, hand2), game_position[1])
     return game_position
+
